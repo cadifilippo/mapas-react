@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { MapsApp } from './MapsApp';
+
+if (!navigator.geolocation) {
+  alert('Geolocation is not supported by your browser');
+  throw new Error('Geolocation is not supported by your browser');
+}
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <MapsApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
