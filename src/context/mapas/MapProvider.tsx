@@ -1,20 +1,38 @@
 import { FC, useReducer } from 'react';
-import { Map } from 'mapbox-gl';
+import { Map, Marker, Popup } from 'mapbox-gl';
 import { MapContext } from './MapContext';
 import { mapReducer } from './mapReducer';
 
 export interface MapState {
-  isMapready: boolean;
+  isMapReady: boolean;
   map?: Map;
 }
 
 const INITIAL_STATE: MapState = {
-  isMapready: false,
+  isMapReady: false,
   map: undefined,
 };
 
 export const MapProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(mapReducer, INITIAL_STATE);
 
-  return <MapContext.Provider value={state}>{children}</MapContext.Provider>;
+  const setMap = (map: Map) => {
+    const myLocationPopup = new Popup().setHTML(`<h3>Aquí estoy</h3>
+    <p>En algún lugar del mundo</p>`);
+
+    new Marker({
+      color: '#ff0000',
+    })
+      .setLngLat(map.getCenter())
+      .setPopup(myLocationPopup)
+      .addTo(map);
+
+    dispatch({ type: 'setMap', payload: map });
+  };
+
+  return (
+    <MapContext.Provider value={{ ...state, setMap }}>
+      {children}
+    </MapContext.Provider>
+  );
 };

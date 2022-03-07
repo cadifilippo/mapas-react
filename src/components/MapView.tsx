@@ -1,25 +1,25 @@
 import { Map } from 'mapbox-gl';
 import { useContext, useLayoutEffect, useRef } from 'react';
-import { PlacesContext } from '../context';
+import { MapContext, PlacesContext } from '../context';
 import { Loading } from './Loading';
 
 export const MapView = () => {
   const { isLoading, userLocation } = useContext(PlacesContext);
+  const { setMap } = useContext(MapContext);
   const mapDiv = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     if (!isLoading) {
       const map = new Map({
         container: mapDiv.current!,
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/outdoors-v11',
         center: userLocation,
         zoom: 16,
       });
 
-      map.on('load', () => {
-        map.resize();
-      });
+      setMap(map);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, userLocation]);
 
   if (isLoading) {
